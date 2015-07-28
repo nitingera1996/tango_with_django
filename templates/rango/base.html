@@ -25,7 +25,6 @@
 				<div class="navbar-collapse collapse">
 				    <u1 class="nav navbar-nav navbar-right">
 					    <li><a href="{% url 'index' %}">Home </a></li>
-						<li><a href="{% url 'search' %}">Search</a></li>
 	                 		{% if user.is_authenticated %}
 			                    <li><a href="{% url 'restricted' %}">Restricted Page</a></li>
 				                <li><a href="{% url 'logout' %}"> Logout </a></li>

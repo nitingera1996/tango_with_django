@@ -22,17 +22,17 @@ def index(request):
     context_dict['categories'] =category_list
     context_dict['pages']=pages_list
     visits = request.session.get('visits')
-    #print visits
+    print visits
     if not visits:
         visits = 1
     reset_last_visit_time = False
     last_visit = request.session.get('last_visit')
-    #print last_visit
+    print last_visit
     if last_visit:
         last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")		
         #print last_visit_time
         #print (datetime.now() - last_visit_time).days
-        if(datetime.now() - last_visit_time).days >= 1:
+        if(datetime.now() - last_visit_time).seconds > 60:
             visits = visits + 1
             reset_last_visit_time = True
     else:
@@ -54,7 +54,15 @@ def about(request):
 def category(request, category_name_slug):
 
     context_dict = {}
-	
+    context_dict['result_list']=None
+    context_dict['query']=None
+    if request.method=="POST":
+        query=request.POST['query'].strip()
+        if query:
+            result_list=run_query(query)
+            context_dict['result_list']=result_list
+            context_dict['query']=query
+    
     try:
         category = Category.objects.filter(slug=category_name_slug).order_by('name')
         category1 = Category.objects.get(slug=category_name_slug)
@@ -67,7 +75,10 @@ def category(request, category_name_slug):
     except Category.DoesNotExist:
         context_dict['category_name']=category_name_slug
         pass
-        return render(request,'rango/category.html',context_dict)
+    if not context_dict['query']:
+        context_dict['query']=category.name
+		
+	return render(request,'rango/category.html',context_dict)
 
 @login_required		
 def add_category(request):
@@ -121,6 +132,19 @@ def add_page(request,category_name_slug):
 		
     context_dict = {'form': form, 'category': cat,'category_name_slug':category_name_slug}
     return render(request,'rango/add_page.html',context_dict)
+
+def auto_add_page(request,title,url,catid):
+    try:
+        cat = Category.objects.get(id=catid)
+    except Category.DoesNotExist:
+        cat = None
+    p = Page.objects.get_or_create(category=cat,title=title)[0]
+    p.url=url
+    p.views=0
+    p.save()
+    pages = Page.objects.filter(id=catid).order_by('-views')
+    return render(request,'rango/pages_list.html',{'pages':pages})
+        
 	
 def register(request):
     #if request.session.test_cookie_worked():

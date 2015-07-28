@@ -13,7 +13,7 @@ def run_query(search_terms):
     search_url = "{0}{1}?$format=json&$top={2}&$skip={3}&Query={4}".format(
         root_url,source,results_per_page,offset,query)
     username=""
-    print search_url
+    #print search_url
     password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
     password_mgr.add_password(None, search_url, username, BING_API_KEY)
     results=[]
