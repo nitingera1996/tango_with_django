@@ -1,0 +1,48 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+{% block body_block %}
+	    {% if user.is_authenticated %}
+		    <div class="page-header">
+		<h1>Rango says... hello {{ user.username }}!
+		{% else %}
+		<h1>Rango says... hello world! </h1>
+		{% endif %}
+		    </div>
+		    <div class="row placeholders">
+			    <div class="col-xs-12 col-sm-6 placeholder">
+				<div class="panel panel-primary">
+				<div class="panel-heading">
+		<h2 class="panel-title">Top liked Categories</h2>
+		        </div>
+				</div>
+        {% if categories %}
+            <u1 class="list-group">
+	            {% for category in categories %}
+                    <li> <a href="{% url 'category' category.slug %}">{{ category.name }}({{ category.likes }} like(s)) </a></li>
+                {% endfor %}
+            </u1>            
+		{% else %}
+		    <strong>There are no categories present.</strong>
+		{% endif %}
+		</div>
+		<div class="col-xs-12 col-sm-6 placeholder">
+		<div class="panel panel-primary">
+		<div class="panel-heading">
+		<h2 class="panel-title"> Top viewed pages </h2>
+		</div>
+		</div>
+		{% if pages %}
+		    <u1 class="list-group" >
+			    {% for page in pages %}
+				    <li> <a href="{{ page.url }}">{{ page.title }}({{ page.views }} view(s)) </a> </li>
+                {% endfor %}
+			</u1>
+		{% endif %}<br/>
+		</div>
+		{% if user.is_authenticated %}
+		<br/>
+		<a href= "{% url 'auth_password_change'%}"> Wanna change your password </a>
+		{% endif %}
+		<br/>
+		<p> You have visited this website {{ visits }} times </p>
+{% endblock %}

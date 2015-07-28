@@ -1,0 +1,9 @@
+<u1 class="nav nav-list">
+{% if cats %}
+    {% for cat in cats %}
+	    <li><a href="{% url 'category' cat.slug %}">{{ cat.name }}</a></li>
+	{% endfor %}
+{% else %}
+    <li> No categories present </li>
+{% endif %}
+</u1>
