@@ -32,7 +32,7 @@ def index(request):
         last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")		
         #print last_visit_time
         #print (datetime.now() - last_visit_time).days
-        if(datetime.now() - last_visit_time).seconds > 60:
+        if(datetime.now() - last_visit_time).seconds > 1800:
             visits = visits + 1
             reset_last_visit_time = True
     else:
