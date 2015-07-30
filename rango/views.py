@@ -133,18 +133,18 @@ def add_page(request,category_name_slug):
     context_dict = {'form': form, 'category': cat,'category_name_slug':category_name_slug}
     return render(request,'rango/add_page.html',context_dict)
 
-def auto_add_page(request,title,url,catid):
+def auto_add_page(request):
+    if request.method == 'GET':
+        cat_id = request.GET['catid']
+        url = request.GET['url']
+        title = request.GET['title']
     try:
         cat = Category.objects.get(id=catid)
     except Category.DoesNotExist:
         cat = None
-    p = Page.objects.get_or_create(category=cat,title=title)[0]
-    p.url=url
-    p.views=0
-    p.save()
-    pages = Page.objects.filter(id=catid).order_by('-views')
-    return render(request,'rango/pages_list.html',{'pages':pages})
-        
+    p = Page.objects.get_or_create(category=cat,title=title,url=url)
+    pages = Page.objects.filter(category=cat).order_by('-views')
+    return render(request,'rango/page_list.html',{'pages':pages})    
 	
 def register(request):
     #if request.session.test_cookie_worked():
